@@ -32,7 +32,10 @@
 								"value": "@pipeline().parameters.TableSchema",
 								"type": "Expression"
 							},
-							"tablename": "@pipeline().parameters.TableName"
+							"tablename": {
+								"value": "@pipeline().parameters.TableName",
+								"type": "Expression"
+							}
 						}
 					},
 					"firstRowOnly": true
