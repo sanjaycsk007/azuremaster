@@ -1,0 +1,83 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name"
+		},
+		"LS_Parent_Sql_Server_DW": {
+			"type": "string"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/PL_PIPELINE_STOREDPROCEDURE')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "SP_UPDT_WTRMRK",
+						"type": "SqlServerStoredProcedure",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"storedProcedureName": "[[dbo].[UpdateWatermark]",
+							"storedProcedureParameters": {
+								"TableName": {
+									"value": {
+										"value": "@pipeline().parameters.TableName",
+										"type": "Expression"
+									},
+									"type": "String"
+								},
+								"TableSchema": {
+									"value": {
+										"value": "@pipeline().parameters.TableSchema",
+										"type": "Expression"
+									},
+									"type": "String"
+								},
+								"WatermarkColumn": {
+									"value": {
+										"value": "@pipeline().parameters.WatermarkColumn",
+										"type": "Expression"
+									},
+									"type": "String"
+								}
+							}
+						},
+						"linkedServiceName": {
+							"referenceName": "[parameters('LS_Parent_Sql_Server_DW')]",
+							"type": "LinkedServiceReference"
+						}
+					}
+				],
+				"parameters": {
+					"TableSchema": {
+						"type": "string"
+					},
+					"TableName": {
+						"type": "string"
+					},
+					"WatermarkColumn": {
+						"type": "string"
+					}
+				},
+				"annotations": []
+			},
+			"dependsOn": []
+		}
+	]
+}
