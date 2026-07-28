@@ -61,7 +61,7 @@
 					},
 					"ifTrueActivities": [
 						{
-							"name": "Copy data1",
+							"name": "COPYSQL_FULL_INCTLOAD_TABLES",
 							"type": "Copy",
 							"dependsOn": [],
 							"policy": {
@@ -103,8 +103,18 @@
 							},
 							"inputs": [
 								{
-									"referenceName": "DS_SQLServer_TBLLKUP",
-									"type": "DatasetReference"
+									"referenceName": "DS_LKUP_MAX_VALUE",
+									"type": "DatasetReference",
+									"parameters": {
+										"schemaname": {
+											"value": "@pipeline().parameters.TableSchema",
+											"type": "Expression"
+										},
+										"tablename": {
+											"value": "@pipeline().parameters.TableName",
+											"type": "Expression"
+										}
+									}
 								}
 							],
 							"outputs": [
@@ -125,7 +135,7 @@
 							"type": "ExecutePipeline",
 							"dependsOn": [
 								{
-									"activity": "Copy data1",
+									"activity": "COPYSQL_FULL_INCTLOAD_TABLES",
 									"dependencyConditions": [
 										"Succeeded"
 									]
